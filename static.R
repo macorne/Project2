@@ -1,6 +1,5 @@
 ## Task 1: Read in the Data and Modify
 
-
 library(tidyverse)
 library(stringr)
 library(ggcorrplot)
@@ -227,3 +226,19 @@ pm <- ggpie(usrbhvr_data |> filter(Gender=="Male"),
                    label_size = 4, 
                    label_pos = "out" )
 cowplot::plot_grid(pf,pm,ncol = 2)
+
+#Numerical Variables
+num_vars <- c("User ID" = "UserID",
+              "App Usage Time (min/day)" = "AppUsageTime",
+              "Screen On Time (hrs/day)" = "ScreenOnTime",
+              "Battery Drain (mAh/day)" = "BatteryDrain",
+              "Number of Apps Installed" = "NumberofAppsInstalled",
+              "Data Usage (MB/day)" = "DataUsage",
+              "Age (years)" = "Age")
+
+#Categorical Variables
+cat_vars <- c("Device Model" = "DeviceModel",
+              "Operating System" = "OperatingSystem",
+              "Gender" = "Gender",
+              "User Behavior Class" = "UserBehaviorClass",
+              "Age Ranges" = "AgeF")
