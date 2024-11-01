@@ -1,13 +1,15 @@
 library(shiny)
 library(shinyalert)
 library(tidyverse)
-source("static.R")
+source("helpers.R")
 
-#On the sidebar, you will have widgets that allow the user to subset the data
-#∗ Choose (at least) two categorical variables they can subset from. If there are groups of
-#categories that make sense to have them choose for a given variable, that’s fine. That is, they
-#don’t need to be able to choose any level of the variable to subset. The user should be
-#able to select all levels as well.
+#On the sidebar, you will have widgets that allow the user 
+#to subset the data
+#∗ Choose (at least) two categorical variables they can subset 
+#from. If there are groups of categories that make sense to have
+#them choose for a given variable, that’s fine. That is, they
+#don’t need to be able to choose any level of the variable 
+#to subset. The user should be able to select all levels as well.
 #∗ Give the user a way to select a numeric variable. When selected, use a dynamic UI method
 #to create a slider (with two values) so they can subset on that variable if they choose.
 #∗ Repeat the previous for a second numeric variable.
@@ -36,73 +38,45 @@ ui <- fluidPage(
         selected = "Operating System"
       ),
       h2("Choose a subset of the data:"),
-      radioButtons(
-        "hhl_corr",
-        "Household Language",
-        choices = list(
-          "All" = 1, 
-          "English only" = 2, 
-          "Spanish" = 3, 
-          "Other" = 4
+      selectizeInput(
+        "num_var1",
+        label = "Numerical Variable 1",
+        choices = num_vars,
+        selected = "NumberofAppsInstalled"
         ),
-        selected = 1
-      ), 
-      radioButtons(
-        "fs_corr",
-        "SNAP Recipient",
-        choices = list(
-          "All" = 1, 
-          "Yes" = 2, 
-          "No" = 3
-        ),
-        selected = 1
-      ),
-      radioButtons(
-        "schl_corr",
-        "Educational attainment",
-        choices = list(
-          "All" = 1, 
-          "High School not Completed" = 2, 
-          "High School or GED" = 3, 
-          "College Degree" = 4
-        ),
-        selected = 1
-      ),
       h2("Select a Range"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
+      conditionalPanel(
+        condition = "input.num_var1 == '???'",
       sliderInput(
         "Range1",
         "Value:",
+        min=0,
+        max=100,
         value = c(0,100)
+      )
+      ),
+      selectizeInput(
+        "num_var2",
+        label = "Numerical Variable 2",
+        choices = num_vars,
+        selected = "DataUsage"
       ),
       h2("Select Another Range"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
-      sliderInput(
+      conditionalPanel(
+        condition = "input.num_var2 == '???'",
+        sliderInput(
         "Range2",
         "Value:",
+        min=0,
+        max=100,
         value = c(0,100)
+      )
       ),
-      actionButton("corr_sample","Get a Sample!")
+      actionButton("subs_sample","Subset the data")
     ),
     mainPanel(
       plotOutput(
         outputId = "distPlot"
-      ),
-      conditionalPanel(
-        "input.corr_sample",
-        h2("Guess the correlation!"),
-        column(6,
-               numericInput(
-                 "corr_guess",
-                 "",
-                 value = 0,
-                 min = -1,
-                 max = 1
-               )
-        ),
-        column(6, 
-               actionButton(
-                 "corr_submit", 
-                 "Check Your Guess!")
-        )
       )
     )
   )
@@ -114,26 +88,27 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output, session) {
   
-  sample_corr <- reactiveValues()
-  sample_corr$corr_data <- NULL
-  sample_corr$corr_truth <- NULL
+  sample_subs <- reactiveValues()
+  sample_subs$corr_data <- NULL
+  sample_subs$corr_truth <- NULL
   
   #Update input boxes so user can't choose the same variable
-  observeEvent(c(input$corr_x, input$corr_y), {
-    corr_x <- input$corr_x
-    corr_y <- input$corr_y
+  #It doesn't completely matter, though the graph will be a line of slope = 1
+  observeEvent(c(input$num_var1, input$num_var2), {
+    num_var1 <- input$num_var1
+    num_var2 <- input$num_var2
     choices <- numeric_vars
-    if (corr_x == corr_y){
-      choices <- choices[-which(choices == corr_x)]
+    if (num_var1 == num_var2){
+      choices <- choices[-which(choices == num_var1)]
       updateSelectizeInput(session,
-                           "corr_y",
+                           "num_var2",
                            choices = choices)
     }
   }
   )
   
-  #Use an observeEvent() to look for the action button (corr_sample)
-  observeEvent(input$corr_sample, {
+  #Use an observeEvent() to look for the action button (subs_sample)
+  observeEvent(input$subs_sample, {
     if(input$hhl_corr == "All"){
       hhl_sub <- HHLvals
     } 
@@ -202,11 +177,6 @@ server <- function(input, output, session) {
       replace = TRUE, 
       prob = subsetted_data$PWGTP/sum(subsetted_data$PWGTP)
     )
-    
-    #Warning:  if standard deviation is zero (no correlation), 
-    #then guessing a value crashes the app
-    sample_corr$corr_data <- subsetted_data[index,]
-    sample_corr$corr_truth <- cor(sample_corr$corr_data |> select(corr_vars))[1,2]
   }
   )
   
@@ -221,7 +191,7 @@ server <- function(input, output, session) {
       )
     ) #this is a useful function to add as a placeholder until data is generated!
     ggplot(
-      sample_corr$corr_data, 
+      sample_subs$corr_data, 
       aes_string(
         x = isolate(input$corr_x), 
         y = isolate(input$corr_y))) + 
@@ -249,7 +219,6 @@ server <- function(input, output, session) {
       }
     }
   })
-  
   
 }
 
