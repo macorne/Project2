@@ -26,7 +26,7 @@ ui <- fluidPage(
   "Categorical Subsetting",
   sidebarLayout(
     sidebarPanel(
-      h2("Choose a subset of the data:"),
+      h2("Select Numeric Variables:"),
       selectizeInput(
         "y_var",
         label = "y-axis",
@@ -61,19 +61,56 @@ ui <- fluidPage(
         value = c(0,100)
       )
       ),
-      h2("Select Categorical Variables:"),
-      selectizeInput(
-        "cat1",
-        label = "Categorical Variable 1",
-        choices = cat_vars,
-        selected = "Device Model"
+      h2("Select Device Model:"),
+      radioButtons(
+        "DevMod_var",
+        "Device Model",
+        choices = list(
+          "All" = 1,
+          "Google Pixel 5" = 2,
+          "iPhone 12" = 3,
+          "OnePlus 9" = 4,
+          "Samsung Galaxy S21" = 5,
+          "Xiaomi Mi 11" = 6
+        ),
+        selected = 1
       ),
-      selectizeInput(
-        "cat2",
-        label = "Categorical Variable 2",
-        choices = cat_vars,
-        selected = "Operating System"
+      h2("Select Operating System:"),
+      radioButtons(
+        "OpSys_var",
+        "Operating System",
+        choices = list(
+          "All" = 1,
+          "Android" = 2,
+          "iOS" = 3
+        ),
+        selected = 1
       ),
+      h2("Select User Behavior Class"),
+      radioButtons(
+        "UBC_var",
+        "User Behavior Class",
+        choices = list(
+          "All" = 1,
+          "Between 0 and 300 MB/day" = 2, 
+          "Between 300 and 600 MB/day" = 3,
+          "Between 600 and 1,000 MB/day" = 4,
+          "Between 1,000 and 1,500 MB/day" = 5,
+          "More than 1,500 MB/day" = 6
+        ),
+        selected = 1
+      ),
+      radioButtons(
+        "Gender_var",
+        "Gender",
+        choices = list(
+          "All" = 1,
+          "Female" = 2,
+          "Male" = 3
+        ),
+        selected = 1
+      )
+      ,
       actionButton("subs_sample","Subset the data")
     ),
     mainPanel(
@@ -84,7 +121,7 @@ ui <- fluidPage(
   )
 )
 
-my_sample <- read_csv("user_behavior_dataset.csv")
+usrbhvr_data <- read_csv("user_behavior_dataset.csv")
 
 ###==============================================###
 # Define server logic
@@ -163,7 +200,7 @@ server <- function(input, output, session) {
     
     corr_vars <- c(input$x_var, input$y_var)
     
-    subsetted_data <- my_sample |>
+    subsetted_data <- usrbhvr_data |>
       filter(#cat vars first
         HHLfac %in% hhl_sub,
         FSfac %in% fs_sub,

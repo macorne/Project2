@@ -43,7 +43,7 @@ usrbhvr_data <- usrbhvr_data |>
                   labels=c("Between 0 and 300 MB/day", 
                              "Between 300 and 600 MB/day",
                              "Between 600 and 1,000 MB/day",
-                             "Between 1,000 and 1,400 MB/day",
+                             "Between 1,000 and 1,500 MB/day",
                              "More than 1,500 MB/day")),
          OperatingSystem = 
            factor(OperatingSystem,
