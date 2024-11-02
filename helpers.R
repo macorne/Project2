@@ -1,6 +1,8 @@
+#ID Variable
+id_vars <- c("User ID" = "UserID")
+
 #Numerical Variables
-num_vars <- c("User ID" = "UserID",
-              "App Usage Time (min/day)" = "AppUsageTime",
+num_vars <- c("App Usage Time (min/day)" = "AppUsageTime",
               "Screen On Time (hrs/day)" = "ScreenOnTime",
               "Battery Drain (mAh/day)" = "BatteryDrain",
               "Number of Apps Installed" = "NumberofAppsInstalled",

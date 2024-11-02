@@ -1,3 +1,5 @@
+library(bslib)
+library(ggplot2)
 library(shiny)
 library(shinyalert)
 library(tidyverse)
@@ -24,46 +26,33 @@ ui <- fluidPage(
   "Categorical Subsetting",
   sidebarLayout(
     sidebarPanel(
-      h2("Select Categorical Variables:"),
-      selectizeInput(
-        "subs1",
-        label = "Categorical Variable 1",
-        choices = cat_vars,
-        selected = "Device Model"
-      ),
-      selectizeInput(
-        "subs2",
-        label = "Categorical Variable 2",
-        choices = cat_vars,
-        selected = "Operating System"
-      ),
       h2("Choose a subset of the data:"),
       selectizeInput(
-        "num_var1",
-        label = "Numerical Variable 1",
+        "y_var",
+        label = "y-axis",
         choices = num_vars,
         selected = "NumberofAppsInstalled"
         ),
       h2("Select a Range"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
       conditionalPanel(
-        condition = "input.num_var1 == '???'",
+        condition = "input.y_var == 'AppUsageTime'",
       sliderInput(
         "Range1",
         "Value:",
-        min=0,
-        max=100,
+        min=min('AppUsageTime'),
+        max=,
         value = c(0,100)
       )
       ),
       selectizeInput(
-        "num_var2",
-        label = "Numerical Variable 2",
+        "x_var",
+        label = "x-axis",
         choices = num_vars,
         selected = "DataUsage"
       ),
       h2("Select Another Range"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
       conditionalPanel(
-        condition = "input.num_var2 == '???'",
+        condition = "input.x_var == '???'",
         sliderInput(
         "Range2",
         "Value:",
@@ -71,6 +60,19 @@ ui <- fluidPage(
         max=100,
         value = c(0,100)
       )
+      ),
+      h2("Select Categorical Variables:"),
+      selectizeInput(
+        "cat1",
+        label = "Categorical Variable 1",
+        choices = cat_vars,
+        selected = "Device Model"
+      ),
+      selectizeInput(
+        "cat2",
+        label = "Categorical Variable 2",
+        choices = cat_vars,
+        selected = "Operating System"
       ),
       actionButton("subs_sample","Subset the data")
     ),
@@ -82,7 +84,7 @@ ui <- fluidPage(
   )
 )
 
-#my_sample <- readRDS("my_sample_temp.rds")
+my_sample <- read_csv("user_behavior_dataset.csv")
 
 ###==============================================###
 # Define server logic
@@ -92,16 +94,30 @@ server <- function(input, output, session) {
   sample_subs$corr_data <- NULL
   sample_subs$corr_truth <- NULL
   
-  #Update input boxes so user can't choose the same variable
+  #Update input boxes so user can't choose the same numerical variable
   #It doesn't completely matter, though the graph will be a line of slope = 1
-  observeEvent(c(input$num_var1, input$num_var2), {
-    num_var1 <- input$num_var1
-    num_var2 <- input$num_var2
-    choices <- numeric_vars
-    if (num_var1 == num_var2){
-      choices <- choices[-which(choices == num_var1)]
+  observeEvent(c(input$y_var, input$x_var), {
+    y_var <- input$y_var
+    x_var <- input$x_var
+    choices <- num_vars
+    if (y_var == x_var){
+      choices <- choices[-which(choices == y_var)]
       updateSelectizeInput(session,
-                           "num_var2",
+                           "x_var",
+                           choices = choices)
+    }
+  }
+  )
+  
+  #Update input boxes so user can't choose the same categorical variable
+  observeEvent(c(input$cat1, input$cat2), {
+    cat1 <- input$cat1
+    cat2 <- input$cat2
+    choices <- cat_vars
+    if (cat2 == cat1){
+      choices <- choices[-which(choices == cat1)]
+      updateSelectizeInput(session,
+                           "cat2",
                            choices = choices)
     }
   }
@@ -145,7 +161,7 @@ server <- function(input, output, session) {
       schl_sub <- SCHLvals[as.character(20:24)]
     }
     
-    corr_vars <- c(input$corr_x, input$corr_y)
+    corr_vars <- c(input$x_var, input$y_var)
     
     subsetted_data <- my_sample |>
       filter(#cat vars first
@@ -193,8 +209,8 @@ server <- function(input, output, session) {
     ggplot(
       sample_subs$corr_data, 
       aes_string(
-        x = isolate(input$corr_x), 
-        y = isolate(input$corr_y))) + 
+        x = isolate(input$x_var), 
+        y = isolate(input$y_var))) + 
       geom_point()
   })
   
