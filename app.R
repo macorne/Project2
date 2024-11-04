@@ -1,20 +1,13 @@
 library(bslib)
 library(ggplot2)
+library(ggcorrplot)
+library(ggpie)
 library(shiny)
 library(shinyalert)
 library(tidyverse)
 source("helpers.R")
 
-#On the sidebar, you will have widgets that allow the user 
-#to subset the data
-#∗ Choose (at least) two categorical variables they can subset 
-#from. If there are groups of categories that make sense to have
-#them choose for a given variable, that’s fine. That is, they
-#don’t need to be able to choose any level of the variable 
-#to subset. The user should be able to select all levels as well.
-#∗ Give the user a way to select a numeric variable. When selected, use a dynamic UI method
-#to create a slider (with two values) so they can subset on that variable if they choose.
-#∗ Repeat the previous for a second numeric variable.
+
 #∗ Use an actionButton() that, when pressed, subsets the data according to the selections made
 #on the sidebar. (The data should not update unless this button is pressed.) You should be
 #using either a reactive() or reactiveValues() object on the server side to subset
@@ -37,12 +30,62 @@ ui <- fluidPage(
       conditionalPanel(
         condition = "input.y_var == 'AppUsageTime'",
       sliderInput(
-        "Range1",
+        "Range_y",
         "Value:",
-        min=min('AppUsageTime'),
-        max=,
-        value = c(0,100)
+        min=30,
+        max=598,
+        value = c(30,598)
       )
+      ),
+      conditionalPanel(
+        condition = "input.y_var == 'ScreenOnTime'",
+        sliderInput(
+          "Range_y",
+          "Value:",
+          min=1.0,
+          max=12.0,
+          value = c(1.0,12.0)
+        )
+      ),
+      conditionalPanel(
+        condition = "input.y_var == 'BatteryDrain'",
+        sliderInput(
+          "Range_y",
+          "Value:",
+          min=302,
+          max=2993,
+          value = c(302,2993)
+        )
+      ),
+      conditionalPanel(
+        condition = "input.y_var == 'NumberofAppsInstalled'",
+        sliderInput(
+          "Range_y",
+          "Value:",
+          min=10,
+          max=99,
+          value = c(10,99)
+        )
+      ),
+      conditionalPanel(
+        condition = "input.y_var == 'DataUsage'",
+        sliderInput(
+          "Range_y",
+          "Value:",
+          min=102,
+          max=2497,
+          value = c(102,2497)
+        )
+      ),
+      conditionalPanel(
+        condition = "input.y_var == 'Age'",
+        sliderInput(
+          "Range_y",
+          "Value:",
+          min=18,
+          max=59,
+          value = c(18,59)
+        )
       ),
       selectizeInput(
         "x_var",
@@ -52,14 +95,64 @@ ui <- fluidPage(
       ),
       h2("Select Another Range"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
       conditionalPanel(
-        condition = "input.x_var == '???'",
+        condition = "input.x_var == 'AppUsageTime'",
         sliderInput(
-        "Range2",
-        "Value:",
-        min=0,
-        max=100,
-        value = c(0,100)
-      )
+          "Range_x",
+          "Value:",
+          min=30,
+          max=598,
+          value = c(30,598)
+        )
+      ),
+      conditionalPanel(
+        condition = "input.x_var == 'ScreenOnTime'",
+        sliderInput(
+          "Range_x",
+          "Value:",
+          min=1.0,
+          max=12.0,
+          value = c(1.0,12.0)
+        )
+      ),
+      conditionalPanel(
+        condition = "input.x_var == 'BatteryDrain'",
+        sliderInput(
+          "Range_x",
+          "Value:",
+          min=302,
+          max=2993,
+          value = c(302,2993)
+        )
+      ),
+      conditionalPanel(
+        condition = "input.x_var == 'NumberofAppsInstalled'",
+        sliderInput(
+          "Range_x",
+          "Value:",
+          min=10,
+          max=99,
+          value = c(10,99)
+        )
+      ),
+      conditionalPanel(
+        condition = "input.x_var == 'DataUsage'",
+        sliderInput(
+          "Range_x",
+          "Value:",
+          min=102,
+          max=2497,
+          value = c(102,2497)
+        )
+      ),
+      conditionalPanel(
+        condition = "input.x_var == 'Age'",
+        sliderInput(
+          "Range_x",
+          "Value:",
+          min=18,
+          max=59,
+          value = c(18,59)
+        )
       ),
       h2("Select Device Model:"),
       radioButtons(
@@ -100,6 +193,7 @@ ui <- fluidPage(
         ),
         selected = 1
       ),
+      h2("Select Gender"),
       radioButtons(
         "Gender_var",
         "Gender",
@@ -114,22 +208,108 @@ ui <- fluidPage(
       actionButton("subs_sample","Subset the data")
     ),
     mainPanel(
-      plotOutput(
-        outputId = "distPlot"
+      tabsetPanel(
+        tabPanel(
+          "About"
+        ),
+        tabPanel(
+          "Data Download"
+        ),
+        tabPanel(
+          "Data Exploration",
+          fluidRow(
+            column(6,
+                   plotOutput(
+                     outputId = "histPlot"
+                     )
+                   ),
+            column(6,
+                   plotOutput(
+                     outputId = "kdPlot"
+                     )
+                   ),
+            column(6,
+                   plotOutput(
+                     outputId = "boxPlot"
+                     )
+                   )
+            ),
+          fluidRow(
+            column(6,
+                   plotOutput(
+                     outputId = "scatPlot"
+                     )
+                   ),
+            column(6,
+                   plotOutput(
+                     outputId = "corrPlot"
+                     )
+                   ),
+            column(6,
+                   plotOutput(
+                     outputId = "piePlot"
+                     )
+                   )
+            )
+          )
+        )
       )
     )
   )
-)
 
 usrbhvr_data <- read_csv("user_behavior_dataset.csv")
+#Fix variable names since these have spaces in some cases
+names(usrbhvr_data) <- gsub("\\([^\\)]+\\)", "",
+                            str_replace_all(names(usrbhvr_data),
+                                            c(" " = "")))
+usrbhvr_data <- usrbhvr_data |>
+    mutate(UBCfac = 
+             factor(
+               UserBehaviorClass,
+               levels=c(1,2,3,4,5),
+               labels=c(
+                 "Between 0 and 300 MB/day",
+                 "Between 300 and 600 MB/day",
+                 "Between 600 and 1,000 MB/day",
+                 "Between 1,000 and 1,500 MB/day",
+                 "More than 1,500 MB/day"
+                 )
+               ),
+           OpSysfac = 
+             factor(
+               OperatingSystem,
+               levels=c(
+                 "Android",
+                 "iOS"
+                 )
+               ),
+           DevModfac = 
+             factor(
+               DeviceModel,
+               levels=c(
+                 "Google Pixel 5",
+                 "OnePlus 9",
+                 "Samsung Galaxy S21",
+                 "Xiaomi Mi 11",
+                 "iPhone 12"
+                 )
+               ),
+           Genderfac = 
+             factor(
+               Gender,
+               levels=c(
+                 "Female",
+                 "Male")
+               )
+    )
 
 ###==============================================###
 # Define server logic
 server <- function(input, output, session) {
   
   sample_subs <- reactiveValues()
-  sample_subs$corr_data <- NULL
-  sample_subs$corr_truth <- NULL
+  subsetted_data <- NULL
+#  sample_subs$subs_truth <- NULL
   
   #Update input boxes so user can't choose the same numerical variable
   #It doesn't completely matter, though the graph will be a line of slope = 1
@@ -146,133 +326,260 @@ server <- function(input, output, session) {
   }
   )
   
-  #Update input boxes so user can't choose the same categorical variable
-  observeEvent(c(input$cat1, input$cat2), {
-    cat1 <- input$cat1
-    cat2 <- input$cat2
-    choices <- cat_vars
-    if (cat2 == cat1){
-      choices <- choices[-which(choices == cat1)]
-      updateSelectizeInput(session,
-                           "cat2",
-                           choices = choices)
-    }
-  }
-  )
   
   #Use an observeEvent() to look for the action button (subs_sample)
   observeEvent(input$subs_sample, {
-    if(input$hhl_corr == "All"){
-      hhl_sub <- HHLvals
+    if(input$DevMod_var == "All"){
+      DevMod_sub <- HHLvals
     } 
-    else if(input$hhl_corr == "English only"){
-      hhl_sub <- HHLvals["1"]
+    else if(input$DevMod_var == "Google Pixel 5"){
+      DevMod_sub <- DevModvals["1"]
     } 
-    else if(input$hhl_corr == "Spanish"){
-      hhl_sub <- HHLvals["2"]
+    else if(input$DevMod_var == "iPhone 12"){
+      DevMod_sub <- DevModvals["2"]
     } 
+    else if(input$DevMod_var == "OnePlus 9"){
+      DevMod_sub <- DevModvals["3"]
+    }
+    else if(input$DevMod_var == "Samsung Galaxy S21"){
+      DevMod_sub <- DevModvals["4"]
+    }
     else {
-      hhl_sub <- HHLvals[c("0", "3", "4", "5")]
+      DevMod_sub <- DevModvals["5"]
     }
     
-    if(input$fs_corr == "All"){
-      fs_sub <- FSvals
+    if(input$OpSys_var == "All"){
+      OpSys_sub <- OpSysvals
     } 
-    else if(input$fs_corr == "Yes"){
-      fs_sub <- FSvals["1"]
-    } 
-    else {
-      fs_sub <- FSvals["2"]
-    }
-    
-    if(input$schl_corr == "All"){
-      schl_sub <- SCHLvals
-    } 
-    else if(input$schl_corr == "High School not Completed"){
-      schl_sub <- SCHLvals[as.character(0:15)]
-    } 
-    else if(input$schl_corr == "High School or GED"){
-      schl_sub <- SCHLvals[as.character(16:19)]
+    else if(input$OpSys_var == "Android"){
+      OpSys_sub <- OpSysvals["1"]
     } 
     else {
-      schl_sub <- SCHLvals[as.character(20:24)]
+      OpSys_sub <- OpSysvals["2"]
     }
     
-    corr_vars <- c(input$x_var, input$y_var)
+    if(input$UBC_var == "All"){
+      UBC_sub <- UBCvals
+    } 
+    else if(input$UBC_var == "Between 0 and 300 MB/day"){
+      UBC_sub <- UBCvals["1"]
+    } 
+    else if(input$UBC_var == "Between 300 and 600 MB/day"){
+      UBC_sub <- UBCvals["2"]
+    } 
+    else if(input$UBC_var == "Between 600 and 1,000 MB/day"){
+      UBC_sub <- UBCvals["3"]
+    } 
+    else if(input$UBC_var == "Between 1,000 and 1,500 MB/day"){
+      UBC_sub <- UBCvals["4"]
+    } 
+    else {
+      UBC_sub <- UBCvals["5"]
+    }
+    
+    if(input$Gender_var == "All"){
+      Gender_sub <- Gendervals
+    } 
+    else if(input$Gender_var == "Female"){
+      Gender_sub <- Gendervals["1"]
+    } 
+    else {
+      Gender_sub <- Gendervals["2"]
+    }
+    
+    subs_vars <- c(input$x_var, input$y_var)
     
     subsetted_data <- usrbhvr_data |>
       filter(#cat vars first
-        HHLfac %in% hhl_sub,
-        FSfac %in% fs_sub,
-        SCHLfac %in% schl_sub
+        DevModfac %in% DevMod_sub,
+        OpSysfac %in% OpSys_sub,
+        UBCfac %in% UBC_sub,
+        Genderfac %in% Gender_sub
       ) %>% 
       #make sure numeric variables are in appropriate range, must use %>% here for {} to work
-      {if("WKHP" %in% corr_vars) filter(., WKHP >= 0) else .} %>%
-      {if("VALP" %in% corr_vars) filter(., !is.na(VALP)) else .} %>%
-      {if("TAXAMT" %in% corr_vars) filter(., !is.na(TAXAMT)) else .} %>%
-      {if("GRPIP" %in% corr_vars) filter(., GRPIP >= 0) else .} %>%
-      {if("GASP" %in% corr_vars) filter(., GASP >= 0) else .} %>%
-      {if("ELEP" %in% corr_vars) filter(., ELEP >= 0) else .} %>%
-      {if("WATP" %in% corr_vars) filter(., WATP >= 0) else .} %>%
-      {if("PINCP" %in% corr_vars) filter(., AGEP >= 18) else .} %>%
-      {if("JWMNP" %in% corr_vars) filter(., !is.na(JWMNP)) else .} 
+      {if("AppUsageTime" %in% subs_vars) filter(., AppUsageTime >= 30 & AppUsageTime <= 598) else .} %>%
+      {if("ScreenOnTime" %in% subs_vars) filter(., ScreenOnTime >= 1.0 & ScreenOnTime <= 12.0) else .} %>%
+      {if("BatteryDrain" %in% subs_vars) filter(., BatteryDrain >= 302 & BatteryDrain <= 2993) else .} %>%
+      {if("NumberofAppsInstalled" %in% subs_vars) filter(., NumberofAppsInstalled >= 10 & NumberofAppsInstalled <= 99) else .} %>%
+      {if("DataUsage" %in% subs_vars) filter(., DataUsage >= 102 & DataUsage <= 2497) else .} %>%
+      {if("Age" %in% subs_vars) filter(., Age >= 18 & Age <= 59) else .}
     
-    index <- sample(
-      1:nrow(subsetted_data), 
-      size = input$Range1, 
-      replace = TRUE, 
-      prob = subsetted_data$PWGTP/sum(subsetted_data$PWGTP)
-    )
+#    index <- sample(
+#      1:nrow(subsetted_data), 
+#      size = input$Range_y, 
+#      replace = TRUE, 
+#      prob = 1/length(usrbhvr_data$UserID)
+#    )
     
-    index <- sample(
-      1:nrow(subsetted_data), 
-      size = input$Range2, 
-      replace = TRUE, 
-      prob = subsetted_data$PWGTP/sum(subsetted_data$PWGTP)
-    )
+#    index <- sample(
+#      1:nrow(subsetted_data), 
+#      size = input$Range_x, 
+#      replace = TRUE, 
+#      prob = subsetted_data$PWGTP/sum(subsetted_data$PWGTP)
+#    )
+    
+#    sample_subs$subs_data <- subsetted_data[index,]
+#    sample_subs$subs_data <- subsetted_data
   }
   )
   
-  #Create a renderPlot() object to output a scatter plot
-  output$distPlot <- renderPlot({
+  #Plot (1)
+  #Create a renderPlot() object to output a histogram
+  output$histPlot <- renderPlot({
     #Use the code below to validate that data exists,
     #then create the appropriate scatter plot
     validate(
       need(
-        !is.null(sample_corr$corr_data), 
+        !is.null(subsetted_data), 
         "Please select your variables, subset, and click the 'Get a Sample!' button."
       )
     ) #this is a useful function to add as a placeholder until data is generated!
-    ggplot(
-      sample_subs$corr_data, 
-      aes_string(
-        x = isolate(input$x_var), 
-        y = isolate(input$y_var))) + 
-      geom_point()
+    ggplot(subsetted_data,
+           aes(
+             x = isolate(input$x_var))) +
+      geom_histogram(
+        alpha=0.5,
+        aes(
+          fill = input$OpSys_var, 
+          col=I("black")
+          ),
+        position = "identity") + 
+      scale_fill_manual(
+        values=c("#E69F00", "#56B4E9")) + 
+      xlab("Battery Drain (mAh/day)") + 
+      ylab("Number of Phones") + 
+      ggtitle(
+        str_wrap(
+          "Number of Phones with x-var, by Operating System",
+          45)
+        ) + 
+      theme(
+        plot.title = element_text(
+          hjust = 0.5)
+        )
   })
-  
-  
-  #Use this code for the correlation guessing game!
-  observeEvent(input$corr_submit, {
-    close <- abs(input$corr_guess - sample_corr$corr_truth) <= .05
-    if(close){
-      shinyalert(title = "Nicely done!",
-                 paste0("The sample correlation is ", 
-                        round(sample_corr$corr_truth, 4), 
-                        "."),
-                 type = "success"
+  #Plot (2)
+  #Generate kernel density plot
+  output$kdplot <- renderPlot({
+    validate(
+      need(
+        !is.null(subsetted_data), 
+        "Please select your variables, subset, and click the 'Get a Sample!' button."
       )
-    } else {
-      if(input$corr_guess > sample_corr$corr_truth){
-        shinyalert(title = "Try again!",
-                   "Try guessing a lower value.")
-      } else {
-        shinyalert(title = "Try again!",
-                   "Try guessing a higher value.")
-      }
-    }
+    )
+    ggplot(subsetted_data,
+           aes(x = isolate(input$x_var))) +
+      geom_density(alpha=0.5,
+                   aes(fill = address,
+                       col=I("black"))) + 
+      scale_fill_manual(values=
+                          c("#E69F00",
+                            "#56B4E9"
+                            )
+                        ) + 
+      xlab("TBD") + 
+      ylab("Density of x_var") +
+      ggtitle(
+        str_wrap("TBD"
+                 )
+        ) +
+      theme(
+        plot.title = element_text(
+          hjust=0.5))
   })
-  
+  #Plot (3)
+  #Generate box plot
+  output$boxPlot <- renderPlot({
+    validate(
+      need(
+        !is.null(subsetted_data), 
+        "Please select your variables, subset, and click the 'Get a Sample!' button."
+      )
+    ) 
+    ggplot(subsetted_data) + 
+    geom_boxplot(
+      aes(x = isolate(input$DevMod_var), 
+          y = isolate(input$y_var), 
+          fill = Gender)) + 
+    scale_fill_manual(
+      values=c("#E69F00", "#56B4E9")) + 
+    xlab("Device Model") + 
+    ylab("y-var") + 
+    ggtitle(
+      str_wrap(
+        "Box Plot of y-var, by Device Model",
+        45)) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  }
+  )
+  #Plot (4)
+  #Generate scatterplot
+  output$scatPlot <- renderPlot({
+    validate(
+      need(
+        !is.null(subsetted_data), 
+        "Please select your variables, subset, and click the 'Get a Sample!' button."
+        )
+    )
+  ggplot(subsetted_data,
+         aes_string(
+           x = isolate(input$x_var),
+           y = isolate(input$y_var), 
+           color = isolate(input$OpSys_var))) +
+    geom_point() +
+    scale_color_manual(
+      values=c("#E69F00", "#56B4E9")) +
+    geom_jitter(width = 0.2, alpha = 0.3)
+  }
+  )
+  #Plot (5)
+  #Generate correlation plot
+  output$corrPlot <- renderPlot({
+    validate(
+      need(
+        !is.null(subsetted_data), 
+        "Please select your variables, subset, and click the 'Get a Sample!' button."
+      )
+    )
+    subs_data_num <- subsetted_data |> 
+      filter(
+        OperatingSystem=="input$OpSys_var"
+        ) |> 
+      select(
+      -c(UserID,
+         Age,
+         AgeF,
+         DeviceModel,
+         OperatingSystem,
+         Gender,
+         UserBehaviorClass)
+      )
+    corr <- round(
+      cor(
+        usrbhvr_numdata
+        ),
+      1
+      )
+    ggcorrplot(corr)
+  })
+  #Plot (6)
+  #Generate pie chart
+  output$piePlot <- renderPlot({
+    validate(
+      need(
+        !is.null(subsetted_data), 
+        "Please select your variables, subset, and click the 'Get a Sample!' button."
+      )
+    )
+    ggpie(subsetted_data |> 
+          filter(Gender=="Gender_var"), 
+          group_key = "DevMod_var", 
+          count_type = "full",
+          label_info = "all", 
+          label_type = "horizon",
+          label_size = 4, 
+          label_pos = "out" )
+  })
 }
 
 # Run the application 

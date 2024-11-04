@@ -3,8 +3,8 @@
 
 #Fix variable names since these have spaces in some cases
 #names(usrbhvr_data) <- gsub("\\([^\\)]+\\)", "",
-                            str_replace_all(names(usrbhvr_data),
-                                            c(" " = "")))
+#                            str_replace_all(names(usrbhvr_data),
+#                                            c(" " = "")))
 
 #usrbhvr_data <- usrbhvr_data |> 
 #  mutate(
@@ -21,7 +21,7 @@
 #      level = c("18-24", "25-34","35-44","45-54","55+")
 #    )
 #  ) |>
-#  mutate(UserBehaviorClass = 
+#  mutate(UBCfac = 
 #           factor(UserBehaviorClass, 
 #                  levels=c(1,2,3,4,5), 
 #                  labels=c("Between 0 and 300 MB/day", 
@@ -29,18 +29,18 @@
 #                           "Between 600 and 1,000 MB/day",
 #                           "Between 1,000 and 1,500 MB/day",
 #                           "More than 1,500 MB/day")),
-#         OperatingSystem = 
+#         OpSysfac = 
 #           factor(OperatingSystem,
 #                  levels=c("Android",
 #                           "iOS")),
-#         DeviceModel = 
+#         DevModfac = 
 #           factor(DeviceModel,
 #                  levels=c("Google Pixel 5",
 #                           "OnePlus 9",
 #                           "Samsung Galaxy S21",
 #                           "Xiaomi Mi 11",
 #                           "iPhone 12")),
-#         Gender = 
+#         Genderfac = 
 #           factor(Gender,
 #                  levels=c("Female","Male"))
 #  )
@@ -62,3 +62,29 @@ cat_vars <- c("Device Model" = "DeviceModel",
               "Gender" = "Gender",
               "User Behavior Class" = "UserBehaviorClass",
               "Age Ranges" = "AgeF")
+
+#Device Model values
+DevModvals <- c( #"Device Models",
+  "1" = "Google Pixel 5",
+  "2" = "iPhone 12",
+  "3" = "OnePlus 9",
+  "4" = "Samsung Galaxy S21",
+  "5" = "Xiaomi Mi 11")
+
+#Operating System values
+OpSysvals <- c( #"Operating Systems",
+  "1" = "Android",
+  "2" = "iOS")
+
+#Gender values
+Gendervals <- c(#"Gender',
+  "1" = "Female",
+  "2" = "Male")
+
+#User Behavior Class values
+UBCvals <- c(#"User Behavior Class",
+  "1" = "Between 0 and 300 MB/day", 
+  "2" = "Between 300 and 600 MB/day",
+  "3" = "Between 600 and 1,000 MB/day",
+  "4" = "Between 1,000 and 1,500 MB/day",
+  "5" = "More than 1,500 MB/day")
