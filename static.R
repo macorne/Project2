@@ -59,8 +59,11 @@ usrbhvr_data <- usrbhvr_data |>
          Gender = 
            factor(Gender,
                   levels=c("Female","Male"))
-         )
+         ) |>
+  mutate(AppUsageTime = as.double(AppUsageTime))
 
+usrbhvr_data
+  
 
 ### Produce numerical and graphical summaries to investigate the data.
 
@@ -212,19 +215,19 @@ ggplot(usrbhvr_data,
 
 # (8) Pie charts
 pf <- ggpie(usrbhvr_data |> filter(Gender=="Female"), 
-      group_key = "DeviceModel", 
-      count_type = "full",
-      label_info = "all", 
-      label_type = "horizon",
-      label_size = 4, 
-      label_pos = "out" )
+            group_key = "DeviceModel", 
+            count_type = "full",
+            label_info = "all", 
+            label_type = "horizon",
+            label_size = 4, 
+            label_pos = "out" )
 pm <- ggpie(usrbhvr_data |> filter(Gender=="Male"), 
-                   group_key = "DeviceModel", 
-                   count_type = "full",
-                   label_info = "all", 
-                   label_type = "horizon",
-                   label_size = 4, 
-                   label_pos = "out" )
+            group_key = "DeviceModel",
+            count_type = "full",
+            label_info = "all", 
+            label_type = "horizon",
+            label_size = 4, 
+            label_pos = "out" )
 cowplot::plot_grid(pf,pm,ncol = 2)
 
 #Numerical Variables

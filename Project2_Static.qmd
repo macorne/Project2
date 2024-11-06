@@ -1,0 +1,96 @@
+---
+title: "Project2_Static"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+library(tidyverse)
+library(stringr)
+library(ggcorrplot)
+library(ggdensity)
+library(ggpie)
+
+#Read in the cell phone user behavior data
+usrbhvr_data <- read_csv("user_behavior_dataset.csv")
+
+#Fix variable names since these have spaces in some cases
+names(usrbhvr_data) <- gsub("\\([^\\)]+\\)", "",
+                            str_replace_all(names(usrbhvr_data),
+                                       c(" " = "")))
+
+# Convert the data into a tibble with factor variables.
+# User Behavior Class (ubc)
+# MB/day 0 <= x < 300:  ubc = 1
+# 300 <= x < 600:  ubc = 2
+# 600 <= x < 1000:  ubc = 3
+# 1000 <= x < 1500:  ubc = 4
+# 1500 <= x:  ubc = 5
+
+usrbhvr_data <- usrbhvr_data |> 
+  mutate(
+    AgeF = dplyr::case_when(
+      Age >= 18 & Age < 25 ~ "18-24",
+      Age >= 25 & Age < 35 ~ "25-34",
+      Age >= 35 & Age < 45 ~ "35-44",
+      Age >= 45 & Age < 55 ~ "45-54",
+      Age >= 55            ~ "55+"
+    ),
+    # Convert to factor
+    AgeF = factor(
+      AgeF,
+      level = c("18-24", "25-34","35-44","45-54","55+")
+    )
+  ) |>
+  mutate(UserBehaviorClass = 
+           factor(UserBehaviorClass, 
+                  levels=c(1,2,3,4,5), 
+                  labels=c("Between 0 and 300 MB/day", 
+                             "Between 300 and 600 MB/day",
+                             "Between 600 and 1,000 MB/day",
+                             "Between 1,000 and 1,500 MB/day",
+                             "More than 1,500 MB/day")),
+         OperatingSystem = 
+           factor(OperatingSystem,
+                      levels=c("Android",
+                               "iOS")),
+         DeviceModel = 
+           factor(DeviceModel,
+                  levels=c("Google Pixel 5",
+                           "OnePlus 9",
+                           "Samsung Galaxy S21",
+                           "Xiaomi Mi 11",
+                           "iPhone 12")),
+         Gender = 
+           factor(Gender,
+                  levels=c("Female","Male"))
+         ) |>
+  mutate(
+    across(
+      where(is.numeric), 
+      ~ifelse(.x <= 10, 
+              round(.x,2), 
+              round(.x, 0)
+              )
+      )
+    )
+
+usrbhvr_data
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).

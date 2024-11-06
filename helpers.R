@@ -60,8 +60,7 @@ num_vars <- c("App Usage Time (min/day)" = "AppUsageTime",
 cat_vars <- c("Device Model" = "DeviceModel",
               "Operating System" = "OperatingSystem",
               "Gender" = "Gender",
-              "User Behavior Class" = "UserBehaviorClass",
-              "Age Ranges" = "AgeF")
+              "User Behavior Class" = "UserBehaviorClass")
 
 #Device Model values
 DevModvals <- c( #"Device Models",
