@@ -124,8 +124,10 @@ ui <- fluidPage(
 # Define server logic required to draw a scatterplot
 server <- function(input, output, session) {
   
-  subsetted_data <- NULL
-  makeReactiveBinding("subsetted_data")
+#  subsetted_data <- NULL
+#  makeReactiveBinding("subsetted_data")
+  tsbs <- reactiveValues()
+  tsbs$sbst <- NULL
   
   #Update input boxes so user can't choose the same variable
   observeEvent(c(input$y_var, input$x_var), {
@@ -175,7 +177,7 @@ server <- function(input, output, session) {
     
     subs_vars <- c(input$y_var, input$x_var)
     
-    subsetted_data <<- usrbhvr_data %>%
+    subsetted_data <- usrbhvr_data %>%
       #Removed since unnecessary for this dataset, but generally necessary
       #      filter(#cat vars first
       #        OpSysfac %in% OpSys_sub,
@@ -188,34 +190,36 @@ server <- function(input, output, session) {
       {if("NumberofAppsInstalled" %in% subs_vars) filter(., NumberofAppsInstalled >= 0) else .} %>%
       {if("DataUsage" %in% subs_vars) filter(., DataUsage >=0) else .} %>%
       {if("Age" %in% subs_vars) filter(., Age >= 0) else .}
+
     
-    #Warning:  if standard deviation is zero (no correlation), 
-    #then guessing a value crashes the app
+      index <- 1:nrow(subsetted_data)
+      
+      tsbs$sbst <- subsetted_data[index,]  
   }
   )
   
+  observeEvent(input$sbst, {
   #Create a renderPlot() object to output a scatter plot
   output$distPlot <- renderPlot({
     #Use the code below to validate that data exists,
     #then create the appropriate scatter plot
     validate(
       need(
-        !is.null(subsetted_data), 
-        "Please select your variables, subset, and click the 'Get a Sample!' button."
+        !is.null(tsbs$sbst), 
+        "Please select your variables, subset, and click the 'Subset' button."
       )
     ) #this is a useful function to add as a placeholder until data is generated!
     ggplot(
-      subsetted_data, 
+      tsbs$sbst, 
       aes(
-        x = !!sym(input$x_var), 
-        y = !!sym(input$y_var),
+        x = !!sym(isolate(input$x_var)),
+        y = !!sym(isolate(input$y_var)),
         color = Gender)) + 
       geom_point() +
-      scale_color_manual(
-        values=
-          c("#E69F00", "#56B4E9")) + 
-      geom_jitter(width = 0.2,
-                  alpha = 0.3)
+      scale_color_manual(values=c("#E69F00", "#56B4E9")) +
+      geom_jitter(width = 0.2, alpha = 0.3)
+  })
+  
   })
   
 } #END server()

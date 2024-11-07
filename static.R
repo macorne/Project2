@@ -135,8 +135,8 @@ usrbhvr_data_csg
 
 # (1) Histogram for BatteryDrain across OperatingSystem
 
-gkdm <- ggplot(usrbhvr_data, aes(x = BatteryDrain))
-gkdm + geom_histogram(alpha=0.5,
+ggplot(usrbhvr_data, aes(x = BatteryDrain)) + 
+  geom_histogram(alpha=0.5,
                     aes(fill = OperatingSystem, 
                         col=I("black")),
                       position = "identity") + 
@@ -151,8 +151,8 @@ gkdm + geom_histogram(alpha=0.5,
 
 # (2) Histogram for BatteryDrain across Gender
 
-gkdm <- ggplot(usrbhvr_data, aes(x = BatteryDrain))
-gkdm + geom_histogram(alpha=0.5,
+ggplot(usrbhvr_data, aes(x = BatteryDrain)) +
+  geom_histogram(alpha=0.5,
                       aes(fill = Gender, 
                           col=I("black")),
                       position = "identity") + 
@@ -167,8 +167,7 @@ gkdm + geom_histogram(alpha=0.5,
 
 # (3) Boxplot for BatteryDrain across Gender
 
-gbpm <- ggplot(usrbhvr_data)
-gbpm + 
+ggplot(usrbhvr_data) + 
   geom_boxplot(
     aes(x = DeviceModel, 
         y = BatteryDrain, 
@@ -185,17 +184,17 @@ gbpm +
 
 # (4) Scatterplot for BatteryDrain versus DataUsage, by Operating System
 
-g1 <- ggplot(usrbhvr_data |> drop_na(DataUsage, BatteryDrain, OperatingSystem),
-             aes(x = DataUsage, y = BatteryDrain, color = OperatingSystem))
-g1 + geom_point() +
+ggplot(usrbhvr_data |> drop_na(DataUsage, BatteryDrain, OperatingSystem),
+             aes(x = DataUsage, y = BatteryDrain, color = OperatingSystem)) + 
+  geom_point() +
   scale_color_manual(values=c("#E69F00", "#56B4E9")) +
   geom_jitter(width = 0.2, alpha = 0.3)
 
 # (5) Scatterplot for ScreenOnTime versus DataUsage, by Gender
 
-g1 <- ggplot(usrbhvr_data |> drop_na(DataUsage, ScreenOnTime, Gender),
-             aes(x = DataUsage, y = ScreenOnTime, color = Gender))
-g1 + geom_point() +
+ggplot(usrbhvr_data |> drop_na(DataUsage, ScreenOnTime, Gender),
+             aes(x = DataUsage, y = ScreenOnTime, color = Gender)) + 
+  geom_point() +
   geom_jitter(width = 0.2, alpha = 0.3) +
   facet_wrap(~ Gender)
 

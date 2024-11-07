@@ -260,7 +260,7 @@ server <- function(input, output, session) {
     ) #this is a useful function to add as a placeholder until data is generated!
     ggplot(
       sample_corr$corr_data, 
-      aes_string(
+      aes(
         x = isolate(input$x_var), 
         y = isolate(input$y_var))) + 
       geom_point()
@@ -287,8 +287,6 @@ server <- function(input, output, session) {
       }
     }
   })
-  
-  
 }
 
 # Run the application 
