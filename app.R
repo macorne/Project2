@@ -1,12 +1,9 @@
-library(bslib)
-library(cowplot)
-library(dplyr)
 library(ggplot2)
-library(ggcorrplot)
-library(ggpie)
 library(shiny)
+library(bslib)
 library(shinyalert)
 library(tidyverse)
+library(ggpie)
 source("helpers.R")
 
 ###==============================================###
@@ -72,28 +69,29 @@ usrbhvr_test <- usrbhvr_data
 ###==============================================###
 
 ###==============================================###
-# Define UI 
+# Define UI for application that draws a scatterplot 
+# and obtains a correlation
 ui <- fluidPage(
-  h1("Categorical Subsetting"),
+  h3("Project 2"),
   sidebarLayout(
     sidebarPanel(
-      h2("Select Numeric Variables:"),
+      h2("Select Numerical Variable:"),
       selectizeInput(
         "y_var",
-        label = "y-axis",
+        label = "y Variable",
         choices = num_vars,
-        selected = "Number of Apps Installed"
-        ),
+        selected = "Battery Drain (mAh/day)"
+      ),
       h3("Select a Range"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
       conditionalPanel(
         condition = "input.y_var == 'AppUsageTime'",
-      sliderInput(
-        "Range_y",
-        "Value:",
-        min=30,
-        max=598,
-        value = c(30,598)
-      )
+        sliderInput(
+          "Range_y",
+          "Value:",
+          min=30,
+          max=598,
+          value = c(30,598)
+        )
       ),
       conditionalPanel(
         condition = "input.y_var == 'ScreenOnTime'",
@@ -145,13 +143,14 @@ ui <- fluidPage(
           value = c(18,59)
         )
       ),
+      h2("Select Another Numerical Variable:"),
       selectizeInput(
         "x_var",
-        label = "x-axis",
+        label = "x Variable",
         choices = num_vars,
-        selected = "Data Usage (MB/day)"
+        selected = "Number of Apps Installed"
       ),
-      h3("Select Another Range"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
+      h3("Select a Range"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
       conditionalPanel(
         condition = "input.x_var == 'AppUsageTime'",
         sliderInput(
@@ -212,147 +211,50 @@ ui <- fluidPage(
           value = c(18,59)
         )
       ),
-      h2("Select Categorical Variable"),
-      selectizeInput(
-        "cat1_var",
-        label = "Categorical Variable 1",
-        choices = cat_vars,
-        selected = "DeviceModel"
+      h2("Select An Option For The Categorical Variable:"),
+      radioButtons(
+        "OpSys_var",
+        "Operating System",
+        choices = list(
+          "Android & iOS" = 1,
+          "Android" = 2,
+          "iOS" = 3
+        ),
+        selected = 1
       ),
-      h3("Select Option"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
-      conditionalPanel(
-        condition = "input.cat1_var == 'DeviceModel'",
-        radioButtons(
-          "DevMod_var",
-          "Device Model",
-          choices = list(
-            "All" = 1,
-            "Google Pixel 5" = 2,
-            "iPhone 12" = 3,
-            "OnePlus 9" = 4,
-            "Samsung Galaxy S21" = 5,
-            "Xiaomi Mi 11" = 6
-          ),
-          selected = 1
-        )
+      h2("Select An Option For The Other Categorical Variable:"),
+      radioButtons(
+        "Gender_var",
+        "Gender",
+        choices = list(
+          "Female & Male" = 1,
+          "Female" = 2,
+          "Male" = 3
+        ),
+        selected = 1
       ),
-      conditionalPanel(
-        condition = "input.cat1_var == 'OperatingSystem'",
-        radioButtons(
-          "OpSys_var",
-          "Operating System",
-          choices = list(
-            "Android and iOS" = 1,
-            "Android" = 2,
-            "iOS" = 3
-          ),
-          selected = 1
-        )
-      ),
-      conditionalPanel(
-        condition = "input.cat1_var == 'UserBehaviorClass'",
-        radioButtons(
-          "UBC_var",
-          "User Behavior Class",
-          choices = list(
-            "All" = 1,
-            "Between 0 and 300 MB/day" = 2, 
-            "Between 300 and 600 MB/day" = 3,
-            "Between 600 and 1,000 MB/day" = 4,
-            "Between 1,000 and 1,500 MB/day" = 5,
-            "More than 1,500 MB/day" = 6
-          ),
-          selected = 1
-        )
-      ),
-      conditionalPanel(
-        condition = "input.cat1_var == 'Gender'",
-        radioButtons(
-          "Gender_var",
-          "Gender",
-          choices = list(
-            "Female and Male" = 1,
-            "Female" = 2,
-            "Male" = 3
-          ),
-          selected = 1
-        )
-      ),
-      h2("Select Other Categorical Variable"),
-      selectizeInput(
-        "cat2_var",
-        label = "Categorical Variable 2",
-        choices = cat_vars,
-        selected = "OperatingSystem"
-      ),
-      h3("Select Option"), #https://stackoverflow.com/questions/38181744/r-shiny-input-slider-range-values
-      conditionalPanel(
-        condition = "input.cat2_var == 'DeviceModel'",
-        radioButtons(
-          "DevMod_var",
-          "Device Model",
-          choices = list(
-            "All" = 1,
-            "Google Pixel 5" = 2,
-            "iPhone 12" = 3,
-            "OnePlus 9" = 4,
-            "Samsung Galaxy S21" = 5,
-            "Xiaomi Mi 11" = 6
-          ),
-          selected = 1
-        )
-      ),
-      conditionalPanel(
-        condition = "input.cat2_var == 'OperatingSystem'",
-        radioButtons(
-          "OpSys_var",
-          "Operating System",
-          choices = list(
-            "Android and iOS" = 1,
-            "Android" = 2,
-            "iOS" = 3
-          ),
-          selected = 1
-        )
-      ),
-      conditionalPanel(
-        condition = "input.cat2_var == 'UserBehaviorClass'",
-        radioButtons(
-          "UBC_var",
-          "User Behavior Class",
-          choices = list(
-            "All" = 1,
-            "Between 0 and 300 MB/day" = 2, 
-            "Between 300 and 600 MB/day" = 3,
-            "Between 600 and 1,000 MB/day" = 4,
-            "Between 1,000 and 1,500 MB/day" = 5,
-            "More than 1,500 MB/day" = 6
-          ),
-          selected = 1
-        )
-      ),
-      conditionalPanel(
-        condition = "input.cat2_var == 'Gender'",
-        radioButtons(
-          "Gender_var",
-          "Gender",
-          choices = list(
-            "Female and Male" = 1,
-            "Female" = 2,
-            "Male" = 3
-          ),
-          selected = 1
-        )
-      ),
-      actionButton("sbst","Subset the data")
-    ),
+      h2("Subset Your Data"),
+      actionButton("sbst","Subset!")
+    ), #END sidebarPanel
     mainPanel(
       tabsetPanel(
         tabPanel(
-          "About"
+          "About",
+          fluidRow(
+            "This app enables investigation of data coming from the cell phone 
+            user dataset specified in the Project assignment sheet.  Functionally, 
+            it takes a subset of the data and uses it to produce numerical and 
+            graphical summaries to investigate the data. These include one- and 
+            two-way contingency tables, summaries across numeric columns, and six 
+            plots."
+          )
         ),
         tabPanel(
-          "Data Download"
+          "Data Download",
+          downloadButton("download", "Download results in csv format") ,
+          column(12,
+                 DT::dataTableOutput ("content"),
+                 style = "  overflow-y: scroll;overflow-x: scroll;")
         ),
         tabPanel(
           "Data Exploration",
@@ -361,67 +263,75 @@ ui <- fluidPage(
                      tabsetPanel(
                        tabPanel("Contingency Tables",
                                 tabsetPanel(
-                                  tabPanel("One-Way"),
-                                  tabPanel("Two-Way")
+                                  tabPanel("One-Way",
+                                           tableOutput(
+                                             outputId = "opsysTable"
+                                           ),
+                                           tableOutput(
+                                             outputId = "genderTable"
+                                           ),
+                                           tableOutput(
+                                             outputId = "devmodTable"
+                                           )),
+                                  tabPanel("Two-Way",
+                                           tableOutput(
+                                             outputId = "osgTable"
+                                           ),
+                                           tableOutput(
+                                             outputId = "osdmTable"
+                                           ),
+                                           tableOutput(
+                                             outputId = "gdmTable"
+                                           ))
                                 )),
-                       tabPanel("Numeric Summaries")
+                       tabPanel("Numeric Summaries",
+                                tableOutput(
+                                  outputId = "numTable"
+                                ))
                      )),
             tabPanel("Plots",
-                     fluidRow(
-                       column(12,
-                              plotOutput(
-                                outputId = "histPlot"
+                     tabsetPanel(
+                       tabPanel("Kernel Density Plot (x2)",
+                                plotOutput(
+                                  outputId = "kdxPlot"
+                                ),
+                                plotOutput(
+                                  outputId = "kdyPlot"
                                 )
-                              ),
-                       column(12,
-                              plotOutput(
-                                outputId = "kdPlot"
-                                )
-                              )),
-                     fluidRow(
-                       column(12,
-                              plotOutput(
-                                outputId = "boxPlot"
-                                )
-                              )
                        ),
-                       column(12,
-                              plotOutput(
-                                outputId = "scatPlot"
-                                )
-                              )),
-                    fluidRow(
-                       column(12,
-                              plotOutput(
-                                outputId = "corrPlot"
-                                )
-                              ),
-                       column(12,
-                              plotOutput(
-                                outputId = "piePlot"
-                                )
-                              )
-                            )
-                          )
-                       )
+                       tabPanel("Scatterplot",
+                                plotOutput(
+                                  outputId = "scatPlot"
+                                )),
+                       tabPanel("Box Plot",
+                                plotOutput(
+                                  outputId = "boxPlot"
+                                )),
+                       tabPanel("Pie Chart",
+                                plotOutput(
+                                  outputId = "piePlot"
+                                )),
+                       tabPanel("Correlation Plot",
+                                plotOutput(
+                                  outputId = "corrPlot"
+                                ))
                      )
             )
           )
-        )
+        )))))
+
+
 
 ###==============================================###
-
-###==============================================###
-# Define server logic
+# Define server logic required to draw a scatterplot
 server <- function(input, output, session) {
   
-#  tsbs <- reactiveValues()
-#  subsetted_data <- NULL
-  subsetted_data <- NULL
-  makeReactiveBinding("subsetted_data")
+  #  subsetted_data <- NULL
+  #  makeReactiveBinding("subsetted_data")
+  tsbs <- reactiveValues()
+  tsbs$sbst <- NULL
   
-  #Update input boxes so user can't choose the same numerical variable
-  #It doesn't completely matter, though the graph will be a line of slope = 1
+  #Update input boxes so user can't choose the same variable
   observeEvent(c(input$y_var, input$x_var), {
     y_var <- input$y_var
     x_var <- input$x_var
@@ -435,42 +345,10 @@ server <- function(input, output, session) {
   }
   )
   
-  #Update input boxes so user can't choose the same categorical variable
-  observeEvent(c(input$cat1_var, input$cat2_var), {
-    cat1_var <- input$cat1_var
-    cat2_var <- input$cat2_var
-    choices <- cat_vars
-    if (cat1_var == cat2_var){
-      choices <- choices[-which(choices == cat1_var)]
-      updateSelectizeInput(session,
-                           "cat2_var",
-                           choices = choices)
-    }
-  }
-  )
-  
-  #Use an observeEvent() to look for the action button (sbst)
+  #Use an observeEvent() to look for the action button (corr_sample)
   observeEvent(input$sbst, {
-    if(input$DevMod_var == "All"){
-      DevMod_sub <- DevModvals
-    } 
-    else if(input$DevMod_var == "Google Pixel 5"){
-      DevMod_sub <- DevModvals["1"]
-    } 
-    else if(input$DevMod_var == "iPhone 12"){
-      DevMod_sub <- DevModvals["2"]
-    } 
-    else if(input$DevMod_var == "OnePlus 9"){
-      DevMod_sub <- DevModvals["3"]
-    }
-    else if(input$DevMod_var == "Samsung Galaxy S21"){
-      DevMod_sub <- DevModvals["4"]
-    }
-    else {
-      DevMod_sub <- DevModvals["5"]
-    }
     
-    if(input$OpSys_var == "Android and iOS"){
+    if(input$OpSys_var == "Android & iOS"){
       OpSys_sub <- OpSysvals
     } 
     else if(input$OpSys_var == "Android"){
@@ -478,28 +356,9 @@ server <- function(input, output, session) {
     } 
     else {
       OpSys_sub <- OpSysvals["2"]
-    }
+    } 
     
-    if(input$UBC_var == "All"){
-      UBC_sub <- UBCvals
-    } 
-    else if(input$UBC_var == "Between 0 and 300 MB/day"){
-      UBC_sub <- UBCvals["1"]
-    } 
-    else if(input$UBC_var == "Between 300 and 600 MB/day"){
-      UBC_sub <- UBCvals["2"]
-    } 
-    else if(input$UBC_var == "Between 600 and 1,000 MB/day"){
-      UBC_sub <- UBCvals["3"]
-    } 
-    else if(input$UBC_var == "Between 1,000 and 1,500 MB/day"){
-      UBC_sub <- UBCvals["4"]
-    } 
-    else {
-      UBC_sub <- UBCvals["5"]
-    }
-    
-    if(input$Gender_var == "Female and Male"){
+    if(input$Gender_var == "Female & Male"){
       Gender_sub <- Gendervals
     } 
     else if(input$Gender_var == "Female"){
@@ -509,191 +368,306 @@ server <- function(input, output, session) {
       Gender_sub <- Gendervals["2"]
     }
     
-    subs_vars <- c(input$x_var, input$y_var)
+    subs_vars <- c(input$y_var, input$x_var)
     
-    #Subset the data
-    subsetted_data <<- usrbhvr_data %>%
-      #Remove since this dataset is fine, need generally
-      #filter(#cat vars first
-      #DevModfac %in% DevMod_sub,
-      #OpSysfac %in% OpSys_sub,
-      #UBCfac %in% UBC_sub,
-      #Genderfac %in% Gender_sub) |>
+    subsetted_data <- usrbhvr_data %>%
+      #Removed since unnecessary for this dataset, but generally necessary
+      #      filter(#cat vars first
+      #        OpSysfac %in% OpSys_sub,
+      #        DevModfac %in% DevMod_sub,
+      #        Genderfac %in% Gender_sub) |>
       #make sure numeric variables are in appropriate range, must use %>% here for {} to work
       {if("AppUsageTime" %in% subs_vars) filter(., AppUsageTime >= 0) else .} %>%
       {if("ScreenOnTime" %in% subs_vars) filter(., ScreenOnTime >= 0.0) else .} %>%
       {if("BatteryDrain" %in% subs_vars) filter(., BatteryDrain >=0) else .} %>%
       {if("NumberofAppsInstalled" %in% subs_vars) filter(., NumberofAppsInstalled >= 0) else .} %>%
       {if("DataUsage" %in% subs_vars) filter(., DataUsage >=0) else .} %>%
-      {if("Age" %in% subs_vars) filter(., Age >= 18) else .}
-
-  }
-  ) #END observeEvent() for actionButton
-  
-  #Plot (1)
-  #Create a renderPlot() object to output a histogram
-#  output$histPlot <- renderPlot({
-    #Use the code to validate that data exists
-#    validate(
-#      need(
-#        !is.null(subsetted_data), 
-#        "Please select your variables, subset, and click the 'Get a Sample!' button."
-#      )
-#    ) #this is a useful function to add as a placeholder until data is generated!
-    #Plot chunk
-#    ggplot(subsetted_data,
-#           aes(
-#             x = !!sym(input$x_var))) +
-#      geom_histogram(
-#        alpha=0.5,
-#        aes(
-#          fill = input$cat1_var, 
-#          col=I("black")
-#          ),
-#        binwidth = 30,
-#        stat = "count",
-#        position = "identity") + 
-#      scale_fill_manual(
-#        values=c("#E69F00", "#56B4E9")) + 
-#      xlab("x-var") + 
-#      ylab("Number of Phones") + 
-#      ggtitle(
-#        str_wrap(
-#          "Number of Phones with x-var, by Operating System",
-#          45)
-#        ) + 
-#      theme(
-#        plot.title = element_text(
-#          hjust = 0.5)
-#        )
-#  })
-  #Plot (2)
-  #Generate kernel density plot
-#  output$kdplot <- renderPlot({
-#    validate(
-#      need(
-#        !is.null(subsetted_data), 
-#        "Please select your variables, subset, and click the 'Get a Sample!' button."
-#      )
-#    )
-#    ggplot(subsetted_data,
-#           aes(x = isolate(input$x_var))) +
-#      geom_density(alpha=0.5,
-#                   aes(fill = input$cat2_var,
-#                       col=I("black"))) + 
-#      scale_fill_manual(values=
-#                          c("#E69F00",
-#                            "#56B4E9"
-#                            )
-#                        ) + 
-#      xlab("TBD") + 
-#      ylab("Density of x_var") +
-#      ggtitle(
-#        str_wrap("TBD"
-#                 )
-#        ) +
-#      theme(
-#        plot.title = element_text(
-#          hjust=0.5))
-#  })
-  #Plot (3)
-  #Generate box plot
-#  output$boxPlot <- renderPlot({
-#    validate(
-#      need(
-#        !is.null(subsetted_data), 
-#        "Please select your variables, subset, and click the 'Get a Sample!' button."
-#      )
-#    ) 
-#    ggplot(subsetted_data) + 
-#    geom_boxplot(
-#      aes(x = isolate(input$cat1_var), 
-#          y = isolate(input$y_var), 
-#          fill = input$cat2_var)) + 
-#    scale_fill_manual(
-#      values=c("#E69F00", "#56B4E9")) + 
-#    xlab("Device Model") + 
-#    ylab("y-var") + 
-#    ggtitle(
-#      str_wrap(
-#        "Box Plot of y-var, by Device Model",
-#        45)) + 
-#    theme(plot.title = element_text(hjust = 0.5))
-#  }
-#  )
-  #Plot (4)
-  #Generate scatterplot
-  output$scatPlot <- renderPlot({
-    validate(
-      need(
-        !is.null(subsetted_data), 
-        "Please select your variables, subset, and click the 'Subset the data!' button."
-        )
-    )
-  ggplot(
-    subsetted_data,
-    aes_string(
-      x = input$x_var,
-      y = input$y_var
-    )
-    ) +
-    geom_point() +
-    xlim(input$Range_x[1],input$Range_x[2]) +
-    ylim(input$Range_y[1],input$Range_y[2])
+      {if("Age" %in% subs_vars) filter(., Age >= 0) else .}
+    
+    index <- 1:nrow(subsetted_data)
+    
+    tsbs$sbst <- subsetted_data[index,]
+    
   }
   )
-  #Plot (5)
-  #Generate correlation plot
-#  output$corrPlot <- renderPlot({
-#    validate(
-#      need(
-#        !is.null(subsetted_data), 
-#        "Please select your variables, subset, and click the 'Get a Sample!' button."
-#      )
-#    )
-#    subs_data_num <- subsetted_data |> 
-#      filter(
-#        input$cat2_var==input$cat2_var["2"]
-#        ) |> 
-#      select(
-#      -c(UserID,
-#         Age,
-#         DeviceModel,
-#         OperatingSystem,
-#         Gender,
-#         UserBehaviorClass)
-#      )
-#    corr <- round(
-#      cor(
-#        subsetted_data
-#        ),
-#      1
-#      )
-#    ggcorrplot(corr)
-#  })
-  #Plot (6)
-  #Generate pie chart
-  #https://www.csc2.ncsu.edu/faculty/healey/msa/shiny/
-#  output$piePlot <- renderPlot({
-#    validate(
-#      need(
-#        !is.null(subsetted_data), 
-#        "Please select your variables, subset, and click the 'Get a Sample!' button."
-#      )
-#    )
-#    ggpie(subsetted_data |> 
-#            filter(
-#              input$cat2_var==input$cat2_var["1"]
-#              ), 
-#          group_key = input$cat1_var, 
-#          count_type = "full",
-#          label_info = "all", 
-#          label_type = "horizon",
-#          label_size = 4, 
-#          label_pos = "out" )
-#  }
-#  )
-}
+  
+  observeEvent(input$sbst, {
+    
+    #One-way contingency tables
+    #Operating System
+    output$opsysTable <- renderTable({
+      #Use the code to validate that data exists
+      validate(
+        need(
+          !is.null(subsetted_data), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      table(tsbs$sbst$OperatingSystem,dnn=list("OperatingSystem"))
+    })
+    
+    #Gender
+    output$genderTable <- renderTable({
+      #Use the code to validate that data exists
+      validate(
+        need(
+          !is.null(subsetted_data), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      table(tsbs$sbst$Gender,dnn=list("Gender"))
+    })
+    
+    #Device Model
+    output$devmodTable <- renderTable({
+      #Use the code to validate that data exists
+      validate(
+        need(
+          !is.null(subsetted_data), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      table(tsbs$sbst$DeviceModel,dnn=list("DeviceModel"))
+    })
+    
+    #Two-way contingency tables
+    #Operating System + Gender
+    output$osgTable <- renderTable({
+      #Use the code to validate that data exists
+      validate(
+        need(
+          !is.null(subsetted_data), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      table(tsbs$sbst$OperatingSystem,
+            tsbs$sbst$Gender,
+            dnn=list("OperatingSystem","Gender"))
+    })
+    
+    #Operating System + Device Model
+    output$osdmTable <- renderTable({
+      #Use the code to validate that data exists
+      validate(
+        need(
+          !is.null(subsetted_data), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      table(tsbs$sbst$OperatingSystem,
+            tsbs$sbst$DeviceModel,
+            dnn=list("OperatingSystem","DeviceModel"))
+    })
+    
+    #Gender + Device Model
+    output$gdmTable <- renderTable({
+      #Use the code to validate that data exists
+      validate(
+        need(
+          !is.null(subsetted_data), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      table(tsbs$sbst$Gender,
+            tsbs$sbst$DeviceModel,
+            dnn=list("Gender","DeviceModel"))
+    })
+    
+    #Numeric summaries
+    output$numTable <- renderTable({
+      #Use the code to validate that data exists
+      validate(
+        need(
+          !is.null(subsetted_data), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      tsbs$sbst |>
+        group_by(DeviceModel,OperatingSystem,Gender,UserBehaviorClass) |>
+        drop_na(DeviceModel,OperatingSystem,Gender,UserBehaviorClass) |>
+        summarize(across(c(AppUsageTime,
+                           ScreenOnTime,
+                           BatteryDrain,
+                           NumberofAppsInstalled,
+                           DataUsage,
+                           Age),
+                         list("mean" = mean,
+                              "median" = median,
+                              "st_dev" = sd,
+                              "variance" = var,
+                              "IQR" = IQR),
+                         .names = "{.fn}_{.col}"))
+    })
+    
+    #Plots (1) & (2)
+    #Create a kernel density plot for x-var and y-var
+    output$kdxPlot <- renderPlot({
+      #Use the code to validate that data exists
+      validate(
+        need(
+          !is.null(subsetted_data), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      #Plot chunk
+      ggplot(tsbs$sbst,
+             aes(
+               x = !!sym(isolate(input$x_var)))) +
+        geom_density(
+          alpha=0.5,
+          aes(
+            fill = OperatingSystem, 
+            col=I("black")
+          ),
+          position = "identity") + 
+        scale_fill_manual(
+          values=c("#E69F00", "#56B4E9")) + 
+        ylab("Density of Phones") + 
+        ggtitle(
+          str_wrap(
+            paste("Density of Phones by ",isolate(input$x_var)," and Operating System"),
+            45)
+        ) + 
+        theme(
+          plot.title = element_text(
+            hjust = 0.5)
+        )
+    })
+    output$kdyPlot <- renderPlot({
+      #Use the code to validate that data exists
+      validate(
+        need(
+          !is.null(subsetted_data), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      #Plot chunk
+      ggplot(tsbs$sbst,
+             aes(
+               x = !!sym(isolate(input$y_var)))) +
+        geom_density(
+          alpha=0.5,
+          aes(
+            fill = Gender, 
+            col=I("black")
+          ),
+          position = "identity") + 
+        scale_fill_manual(
+          values=c("#E69F00", "#56B4E9")) + 
+        ylab("Density of Phones") + 
+        ggtitle(
+          str_wrap(
+            paste("Density of Phones by ",isolate(input$y_var)," and Gender"),
+            45)
+        ) + 
+        theme(
+          plot.title = element_text(
+            hjust = 0.5)
+        )
+    })
+    #Plot (2)
+    #Generate scatterplot
+    output$scatPlot <- renderPlot({
+      #Use the code below to validate that data exists,
+      #then create the appropriate scatter plot
+      validate(
+        need(
+          !is.null(tsbs$sbst), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      ggplot(tsbs$sbst, 
+             aes(
+               x = !!sym(isolate(input$x_var)),
+               y = !!sym(isolate(input$y_var)),
+               color = Gender)) + 
+        geom_point() +
+        scale_color_manual(values=c("#E69F00", "#56B4E9")) +
+        geom_jitter(width = 0.2, alpha = 0.3)
+    })
+    #Plot (3) 
+    #Boxplot for BatteryDrain across Operating System
+    output$boxPlot <- renderPlot({
+      #Use the code below to validate that data exists,
+      #then create the appropriate scatter plot
+      validate(
+        need(
+          !is.null(tsbs$sbst), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      
+      ggplot(tsbs$sbst) + 
+        geom_boxplot(
+          aes(x = OperatingSystem, 
+              y = !!sym(isolate(input$y_var)), 
+              fill = Gender)) + 
+        scale_fill_manual(
+          values=c("#E69F00", "#56B4E9")) + 
+        xlab("Operating System") + 
+        ylab(isolate(input$y_var)) + 
+        ggtitle(
+          str_wrap(
+            paste("Box Plot of ",input$y_var,"by Operating System and Gender"),
+            45)) + 
+        theme(plot.title = element_text(hjust = 0.5))
+    })
+    #Plot (4) 
+    #Pie Chart
+    output$piePlot <- renderPlot({
+      #Use the code below to validate that data exists,
+      #then create the appropriate scatter plot
+      validate(
+        need(
+          !is.null(tsbs$sbst), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      
+      ggpie(tsbs$sbst, 
+            group_key = "DeviceModel", 
+            count_type = "full",
+            label_info = "all", 
+            label_type = "horizon",
+            label_size = 4, 
+            label_pos = "out" )
+    })
+    #Plot (5) 
+    #Correlation plot (ggcorrplot)
+    #Compute a correlation matrix for numeric variables
+    output$corrPlot <- renderPlot({
+      #Use the code below to validate that data exists,
+      #then create the appropriate scatter plot
+      validate(
+        need(
+          !is.null(tsbs$sbst), 
+          "Please select your variables, subset, and click the 'Subset' button."
+        )
+      ) #this is a useful function to add as a placeholder until data is generated!
+      
+      sbst_num <- tsbs$sbst |>
+        select(
+          -c(UserID,Age,AgeF,DeviceModel,OperatingSystem,Gender,UserBehaviorClass))
+      corr <- round(cor(usrbhvr_numdata), 1)
+      ggcorrplot(corr)
+    })
+    
+  })
+  
+  output$content <-
+    DT::renderDataTable(tsbs$sbst |>
+                          select(-c(UBCfac,OpSysfac,DevModfac,Genderfac,weight)))
+  output$download <-
+    downloadHandler(
+      filename = function () {
+        paste("MyData.csv", sep = "")
+      },
+      content = function(file) {
+        write.csv(content, file)
+      }
+    )
+  
+} #END server()
 
 # Run the application 
 shinyApp(ui = ui, server = server)

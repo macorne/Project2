@@ -6,6 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Matthew Corne">
+<meta name="dcterms.date" content="2024-11-06">
 
 <title>Project2_Static</title>
 <style>
@@ -86,7 +88,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Matthew Corne </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 6, 2024</p>
+    </div>
+  </div>
   
     
   </div>
@@ -96,15 +110,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="quarto" class="level2">
-<h2 class="anchored" data-anchor-id="quarto">Quarto</h2>
-<p>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <a href="https://quarto.org" class="uri">https://quarto.org</a>.</p>
-</section>
-<section id="running-code" class="level2">
-<h2 class="anchored" data-anchor-id="running-code">Running Code</h2>
-<p>When you click the <strong>Render</strong> button a document will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+<section id="static-file-easy-to-render" class="level2">
+<h2 class="anchored" data-anchor-id="static-file-easy-to-render">Static File (Easy to Render)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Task 1: Read in the Data and Modify</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.4     ✔ readr     2.1.5
@@ -185,17 +196,9 @@ dbl (8): User ID, App Usage Time (min/day), Screen On Time (hours/day), Batt...
 <span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>           <span class="fu">factor</span>(Gender,</span>
 <span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>                  <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"Female"</span>,<span class="st">"Male"</span>))</span>
 <span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>         ) <span class="sc">|&gt;</span></span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>      <span class="fu">where</span>(is.numeric), </span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>      <span class="sc">~</span><span class="fu">ifelse</span>(.x <span class="sc">&lt;=</span> <span class="dv">10</span>, </span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>              <span class="fu">round</span>(.x,<span class="dv">2</span>), </span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>              <span class="fu">round</span>(.x, <span class="dv">0</span>)</span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>              )</span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>usrbhvr_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">AppUsageTime =</span> <span class="fu">as.double</span>(AppUsageTime))</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>usrbhvr_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 700 × 12
    UserID DeviceModel     OperatingSystem AppUsageTime ScreenOnTime BatteryDrain
@@ -207,21 +210,347 @@ dbl (8): User ID, App Usage Time (min/day), Screen On Time (hours/day), Batt...
  5      5 iPhone 12       iOS                      187          4.3         1367
  6      6 Google Pixel 5  Android                   99          2            940
  7      7 Samsung Galaxy… Android                  350          7.3         1802
- 8      8 OnePlus 9       Android                  543         11           2956
+ 8      8 OnePlus 9       Android                  543         11.4         2956
  9      9 Samsung Galaxy… Android                  340          7.7         2138
 10     10 iPhone 12       iOS                      424          6.6         1957
 # ℹ 690 more rows
 # ℹ 6 more variables: NumberofAppsInstalled &lt;dbl&gt;, DataUsage &lt;dbl&gt;, Age &lt;dbl&gt;,
 #   Gender &lt;fct&gt;, UserBehaviorClass &lt;fct&gt;, AgeF &lt;fct&gt;</code></pre>
 </div>
-</div>
-<p>You can add options to executable code like this</p>
-<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Produce numerical and graphical summaries to investigate the data.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="do">#### One-way and Two-way contingency tables</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># User_Behavior_Class</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>UserBehaviorClass,<span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"UserBehaviorClass"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
+<pre><code>UserBehaviorClass
+      Between 0 and 300 MB/day     Between 300 and 600 MB/day 
+                           136                            146 
+  Between 600 and 1,000 MB/day Between 1,000 and 1,500 MB/day 
+                           143                            139 
+        More than 1,500 MB/day 
+                           136 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Operating_System</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>OperatingSystem,<span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"OperatingSystem"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>OperatingSystem
+Android     iOS 
+    554     146 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Device_Model</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>DeviceModel,<span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"DeviceModel"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DeviceModel
+    Google Pixel 5          OnePlus 9 Samsung Galaxy S21       Xiaomi Mi 11 
+               142                133                133                146 
+         iPhone 12 
+               146 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>Gender,<span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"Gender"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Gender
+Female   Male 
+   336    364 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#User_Behavior_Class + Operating_System</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>UserBehaviorClass,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>      usrbhvr_data<span class="sc">$</span>OperatingSystem,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"UserBehaviorClass"</span>,<span class="st">"OperatingSystem"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                OperatingSystem
+UserBehaviorClass                Android iOS
+  Between 0 and 300 MB/day           114  22
+  Between 300 and 600 MB/day         114  32
+  Between 600 and 1,000 MB/day       111  32
+  Between 1,000 and 1,500 MB/day     110  29
+  More than 1,500 MB/day             105  31</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#User_Behavior_Class + Device_Model</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>UserBehaviorClass,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>      usrbhvr_data<span class="sc">$</span>DeviceModel,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"UserBehaviorClass"</span>,<span class="st">"DeviceModel"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                DeviceModel
+UserBehaviorClass                Google Pixel 5 OnePlus 9 Samsung Galaxy S21
+  Between 0 and 300 MB/day                   32        25                 26
+  Between 300 and 600 MB/day                 26        31                 30
+  Between 600 and 1,000 MB/day               33        25                 21
+  Between 1,000 and 1,500 MB/day             24        26                 33
+  More than 1,500 MB/day                     27        26                 23
+                                DeviceModel
+UserBehaviorClass                Xiaomi Mi 11 iPhone 12
+  Between 0 and 300 MB/day                 31        22
+  Between 300 and 600 MB/day               27        32
+  Between 600 and 1,000 MB/day             32        32
+  Between 1,000 and 1,500 MB/day           27        29
+  More than 1,500 MB/day                   29        31</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#User_Behavior_Class + Gender</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>UserBehaviorClass,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>      usrbhvr_data<span class="sc">$</span>Gender,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"UserBehaviorClass"</span>,<span class="st">"Gender"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                Gender
+UserBehaviorClass                Female Male
+  Between 0 and 300 MB/day           63   73
+  Between 300 and 600 MB/day         64   82
+  Between 600 and 1,000 MB/day       82   61
+  Between 1,000 and 1,500 MB/day     67   72
+  More than 1,500 MB/day             60   76</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Operating_System + Device_Model</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>OperatingSystem,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>      usrbhvr_data<span class="sc">$</span>DeviceModel,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"OperatingSystem"</span>,<span class="st">"DeviceModel"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               DeviceModel
+OperatingSystem Google Pixel 5 OnePlus 9 Samsung Galaxy S21 Xiaomi Mi 11
+        Android            142       133                133          146
+        iOS                  0         0                  0            0
+               DeviceModel
+OperatingSystem iPhone 12
+        Android         0
+        iOS           146</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Operating_System + Gender</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>OperatingSystem,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>      usrbhvr_data<span class="sc">$</span>Gender,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"OperatingSystem"</span>,<span class="st">"Gender"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               Gender
+OperatingSystem Female Male
+        Android    262  292
+        iOS         74   72</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Device_Model + Gender</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(usrbhvr_data<span class="sc">$</span>DeviceModel,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>      usrbhvr_data<span class="sc">$</span>Gender,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">dnn=</span><span class="fu">list</span>(<span class="st">"DeviceModel"</span>,<span class="st">"Gender"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    Gender
+DeviceModel          Female Male
+  Google Pixel 5         69   73
+  OnePlus 9              61   72
+  Samsung Galaxy S21     54   79
+  Xiaomi Mi 11           78   68
+  iPhone 12              74   72</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### Numerical summaries (means, medians, sds, etc.) for quantitative variables </span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="do">#### at levels of categorical variables</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#csg = center spread at levels of categorical variables</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>usrbhvr_data_csg <span class="ot">&lt;-</span> usrbhvr_data <span class="sc">|&gt;</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(DeviceModel,OperatingSystem,Gender,UserBehaviorClass) <span class="sc">|&gt;</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(DeviceModel,OperatingSystem,Gender,UserBehaviorClass) <span class="sc">|&gt;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(AppUsageTime,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>                     ScreenOnTime,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>                     BatteryDrain,</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>                     NumberofAppsInstalled,</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>                     DataUsage,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>                     Age),</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>            <span class="fu">list</span>(<span class="st">"mean"</span> <span class="ot">=</span> mean,</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"median"</span> <span class="ot">=</span> median,</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"st_dev"</span> <span class="ot">=</span> sd,</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"variance"</span> <span class="ot">=</span> var,</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>                 <span class="st">"IQR"</span> <span class="ot">=</span> IQR),</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'DeviceModel', 'OperatingSystem', 'Gender'.
+You can override using the `.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>usrbhvr_data_csg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 50 × 34
+# Groups:   DeviceModel, OperatingSystem, Gender [10]
+   DeviceModel    OperatingSystem Gender UserBehaviorClass     mean_AppUsageTime
+   &lt;fct&gt;          &lt;fct&gt;           &lt;fct&gt;  &lt;fct&gt;                             &lt;dbl&gt;
+ 1 Google Pixel 5 Android         Female Between 0 and 300 MB…              62.1
+ 2 Google Pixel 5 Android         Female Between 300 and 600 …             128. 
+ 3 Google Pixel 5 Android         Female Between 600 and 1,00…             252. 
+ 4 Google Pixel 5 Android         Female Between 1,000 and 1,…             411  
+ 5 Google Pixel 5 Android         Female More than 1,500 MB/d…             554. 
+ 6 Google Pixel 5 Android         Male   Between 0 and 300 MB…              60.4
+ 7 Google Pixel 5 Android         Male   Between 300 and 600 …             133. 
+ 8 Google Pixel 5 Android         Male   Between 600 and 1,00…             237  
+ 9 Google Pixel 5 Android         Male   Between 1,000 and 1,…             408. 
+10 Google Pixel 5 Android         Male   More than 1,500 MB/d…             538. 
+# ℹ 40 more rows
+# ℹ 29 more variables: median_AppUsageTime &lt;dbl&gt;, st_dev_AppUsageTime &lt;dbl&gt;,
+#   variance_AppUsageTime &lt;dbl&gt;, IQR_AppUsageTime &lt;dbl&gt;,
+#   mean_ScreenOnTime &lt;dbl&gt;, median_ScreenOnTime &lt;dbl&gt;,
+#   st_dev_ScreenOnTime &lt;dbl&gt;, variance_ScreenOnTime &lt;dbl&gt;,
+#   IQR_ScreenOnTime &lt;dbl&gt;, mean_BatteryDrain &lt;dbl&gt;, median_BatteryDrain &lt;dbl&gt;,
+#   st_dev_BatteryDrain &lt;dbl&gt;, variance_BatteryDrain &lt;dbl&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### Create at least six plots</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (1) Histogram for BatteryDrain across OperatingSystem</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(usrbhvr_data, <span class="fu">aes</span>(<span class="at">x =</span> BatteryDrain)) <span class="sc">+</span> </span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">alpha=</span><span class="fl">0.5</span>,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">aes</span>(<span class="at">fill =</span> OperatingSystem, </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">col=</span><span class="fu">I</span>(<span class="st">"black"</span>)),</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span> </span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>)) <span class="sc">+</span> </span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Battery Drain (mAh/day)"</span>) <span class="sc">+</span> </span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of Phones"</span>) <span class="sc">+</span> </span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_wrap</span>(</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Number of Phones with Battery Drain Rate, by Operating System"</span>,</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>      <span class="dv">45</span>)) <span class="sc">+</span> </span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Project2_Static_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<p>The <code>echo: false</code> option disables the printing of code (only output is displayed).</p>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (2) Histogram for BatteryDrain across Gender</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(usrbhvr_data, <span class="fu">aes</span>(<span class="at">x =</span> BatteryDrain)) <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">alpha=</span><span class="fl">0.5</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">aes</span>(<span class="at">fill =</span> Gender, </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">col=</span><span class="fu">I</span>(<span class="st">"black"</span>)),</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span> </span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>)) <span class="sc">+</span> </span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Battery Drain (mAh/day)"</span>) <span class="sc">+</span> </span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of Phones"</span>) <span class="sc">+</span> </span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_wrap</span>(</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Number of Phones with Battery Drain Rate, by Gender"</span>,</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>      <span class="dv">45</span>)) <span class="sc">+</span> </span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Project2_Static_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (3) Boxplot for BatteryDrain across Gender</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(usrbhvr_data) <span class="sc">+</span> </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> DeviceModel, </span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> BatteryDrain, </span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">fill =</span> Gender)) <span class="sc">+</span> </span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">values=</span><span class="fu">c</span>(<span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>)) <span class="sc">+</span> </span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Gender"</span>) <span class="sc">+</span> </span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Battery Drain (mAh/day)"</span>) <span class="sc">+</span> </span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_wrap</span>(</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Box Plot of Battery Drain Per Day, by Gender"</span>,</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>      <span class="dv">45</span>)) <span class="sc">+</span> </span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Project2_Static_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (4) Scatterplot for BatteryDrain versus DataUsage, by Operating System</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(usrbhvr_data <span class="sc">|&gt;</span> <span class="fu">drop_na</span>(DataUsage, BatteryDrain, OperatingSystem),</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> DataUsage, <span class="at">y =</span> BatteryDrain, <span class="at">color =</span> OperatingSystem)) <span class="sc">+</span> </span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>)) <span class="sc">+</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Project2_Static_files/figure-html/unnamed-chunk-1-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (5) Scatterplot for ScreenOnTime versus DataUsage, by Gender</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(usrbhvr_data <span class="sc">|&gt;</span> <span class="fu">drop_na</span>(DataUsage, ScreenOnTime, Gender),</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> DataUsage, <span class="at">y =</span> ScreenOnTime, <span class="at">color =</span> Gender)) <span class="sc">+</span> </span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Gender)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Project2_Static_files/figure-html/unnamed-chunk-1-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (6) Correlation plot (ggcorrplot)</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute a correlation matrix for numeric variables</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>usrbhvr_numdata <span class="ot">&lt;-</span> usrbhvr_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(OperatingSystem<span class="sc">==</span><span class="st">"Android"</span>) <span class="sc">|&gt;</span> <span class="fu">select</span>(</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">c</span>(UserID,Age,AgeF,DeviceModel,OperatingSystem,Gender,UserBehaviorClass))</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>corr <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">cor</span>(usrbhvr_numdata), <span class="dv">1</span>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcorrplot</span>(corr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Project2_Static_files/figure-html/unnamed-chunk-1-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (7) Correlation plot (ggdensity)</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(usrbhvr_data, </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(DataUsage, AppUsageTime, <span class="at">fill =</span> AgeF)) <span class="sc">+</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hdr</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">160</span>, <span class="dv">240</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">70</span>)) <span class="sc">+</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">21</span>) <span class="sc">+</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(OperatingSystem))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Project2_Static_files/figure-html/unnamed-chunk-1-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (8) Pie charts</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>pf <span class="ot">&lt;-</span> <span class="fu">ggpie</span>(usrbhvr_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(Gender<span class="sc">==</span><span class="st">"Female"</span>), </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">group_key =</span> <span class="st">"DeviceModel"</span>, </span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">count_type =</span> <span class="st">"full"</span>,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">label_info =</span> <span class="st">"all"</span>, </span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">label_type =</span> <span class="st">"horizon"</span>,</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">label_size =</span> <span class="dv">4</span>, </span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">label_pos =</span> <span class="st">"out"</span> )</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>pm <span class="ot">&lt;-</span> <span class="fu">ggpie</span>(usrbhvr_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(Gender<span class="sc">==</span><span class="st">"Male"</span>), </span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">group_key =</span> <span class="st">"DeviceModel"</span>,</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">count_type =</span> <span class="st">"full"</span>,</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">label_info =</span> <span class="st">"all"</span>, </span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">label_type =</span> <span class="st">"horizon"</span>,</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">label_size =</span> <span class="dv">4</span>, </span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">label_pos =</span> <span class="st">"out"</span> )</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>cowplot<span class="sc">::</span><span class="fu">plot_grid</span>(pf,pm,<span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Project2_Static_files/figure-html/unnamed-chunk-1-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Numerical Variables</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>num_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"User ID"</span> <span class="ot">=</span> <span class="st">"UserID"</span>,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>              <span class="st">"App Usage Time (min/day)"</span> <span class="ot">=</span> <span class="st">"AppUsageTime"</span>,</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Screen On Time (hrs/day)"</span> <span class="ot">=</span> <span class="st">"ScreenOnTime"</span>,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Battery Drain (mAh/day)"</span> <span class="ot">=</span> <span class="st">"BatteryDrain"</span>,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Number of Apps Installed"</span> <span class="ot">=</span> <span class="st">"NumberofAppsInstalled"</span>,</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Data Usage (MB/day)"</span> <span class="ot">=</span> <span class="st">"DataUsage"</span>,</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Age (years)"</span> <span class="ot">=</span> <span class="st">"Age"</span>)</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="co">#Categorical Variables</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>cat_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Device Model"</span> <span class="ot">=</span> <span class="st">"DeviceModel"</span>,</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Operating System"</span> <span class="ot">=</span> <span class="st">"OperatingSystem"</span>,</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Gender"</span> <span class="ot">=</span> <span class="st">"Gender"</span>,</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>              <span class="st">"User Behavior Class"</span> <span class="ot">=</span> <span class="st">"UserBehaviorClass"</span>,</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Age Ranges"</span> <span class="ot">=</span> <span class="st">"AgeF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 
 </main>
