@@ -1,1 +1,2 @@
 # Project2
+"This app enables investigation of data coming from the cell phone user dataset specified in the Project assignment sheet.  Functionally, it (is supposed to) take a subset of the data and uses it to produce numerical and graphical summaries to investigate the data. These include one- and two-way contingency tables, summaries across numeric columns, and six plots."

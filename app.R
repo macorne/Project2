@@ -4,6 +4,7 @@ library(bslib)
 library(shinyalert)
 library(tidyverse)
 library(ggpie)
+library(ggcorrplot)
 source("helpers.R")
 
 ###==============================================###
@@ -399,7 +400,7 @@ server <- function(input, output, session) {
       #Use the code to validate that data exists
       validate(
         need(
-          !is.null(subsetted_data), 
+          !is.null(tsbs$sbst), 
           "Please select your variables, subset, and click the 'Subset' button."
         )
       ) #this is a useful function to add as a placeholder until data is generated!
@@ -411,7 +412,7 @@ server <- function(input, output, session) {
       #Use the code to validate that data exists
       validate(
         need(
-          !is.null(subsetted_data), 
+          !is.null(tsbs$sbst), 
           "Please select your variables, subset, and click the 'Subset' button."
         )
       ) #this is a useful function to add as a placeholder until data is generated!
@@ -423,7 +424,7 @@ server <- function(input, output, session) {
       #Use the code to validate that data exists
       validate(
         need(
-          !is.null(subsetted_data), 
+          !is.null(tsbs$sbst), 
           "Please select your variables, subset, and click the 'Subset' button."
         )
       ) #this is a useful function to add as a placeholder until data is generated!
@@ -436,7 +437,7 @@ server <- function(input, output, session) {
       #Use the code to validate that data exists
       validate(
         need(
-          !is.null(subsetted_data), 
+          !is.null(tsbs$sbst), 
           "Please select your variables, subset, and click the 'Subset' button."
         )
       ) #this is a useful function to add as a placeholder until data is generated!
@@ -450,7 +451,7 @@ server <- function(input, output, session) {
       #Use the code to validate that data exists
       validate(
         need(
-          !is.null(subsetted_data), 
+          !is.null(tsbs$sbst), 
           "Please select your variables, subset, and click the 'Subset' button."
         )
       ) #this is a useful function to add as a placeholder until data is generated!
@@ -464,7 +465,7 @@ server <- function(input, output, session) {
       #Use the code to validate that data exists
       validate(
         need(
-          !is.null(subsetted_data), 
+          !is.null(tsbs$sbst), 
           "Please select your variables, subset, and click the 'Subset' button."
         )
       ) #this is a useful function to add as a placeholder until data is generated!
@@ -478,7 +479,7 @@ server <- function(input, output, session) {
       #Use the code to validate that data exists
       validate(
         need(
-          !is.null(subsetted_data), 
+          !is.null(tsbs$sbst), 
           "Please select your variables, subset, and click the 'Subset' button."
         )
       ) #this is a useful function to add as a placeholder until data is generated!
@@ -505,7 +506,7 @@ server <- function(input, output, session) {
       #Use the code to validate that data exists
       validate(
         need(
-          !is.null(subsetted_data), 
+          !is.null(tsbs$sbst), 
           "Please select your variables, subset, and click the 'Subset' button."
         )
       ) #this is a useful function to add as a placeholder until data is generated!
@@ -537,7 +538,7 @@ server <- function(input, output, session) {
       #Use the code to validate that data exists
       validate(
         need(
-          !is.null(subsetted_data), 
+          !is.null(tsbs$sbst), 
           "Please select your variables, subset, and click the 'Subset' button."
         )
       ) #this is a useful function to add as a placeholder until data is generated!
@@ -647,8 +648,8 @@ server <- function(input, output, session) {
       
       sbst_num <- tsbs$sbst |>
         select(
-          -c(UserID,Age,AgeF,DeviceModel,OperatingSystem,Gender,UserBehaviorClass))
-      corr <- round(cor(usrbhvr_numdata), 1)
+          c(AppUsageTime,ScreenOnTime,BatteryDrain,NumberofAppsInstalled,DataUsage))
+      corr <- round(cor(sbst_num), 1)
       ggcorrplot(corr)
     })
     

@@ -1,0 +1,12 @@
+name: Project2
+title: Project2
+username: cornema
+account: cornema
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13260091
+bundleId: 9326751
+url: https://cornema.shinyapps.io/Project2/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
